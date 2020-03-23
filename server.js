@@ -108,7 +108,7 @@ axios
 
                 let rcv_key = decrypt_key(res.data.result.EncryptKey)
                 let rcv_dat = decrypt_data(res.data.result.EncryptedData, rcv_key)
-                console.log("Receive data:", rcv_dat)
+                console.log("Received data:", rcv_dat)
             })
             .catch(error => {
                 console.log(error)
