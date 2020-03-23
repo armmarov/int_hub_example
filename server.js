@@ -8,6 +8,10 @@ let publicKey = fs.readFileSync("./key/user_key.pub", "utf8");
 let privateKey = fs.readFileSync("./key/user_key.priv", "utf8");
 let serverKey = fs.readFileSync("./key/server_key.pub", "utf8");
 
+assert(publicKey != "", "Unable to load user public key")
+assert(privateKey != "", "Unable to load user private key")
+assert(serverKey != "", "Unable to load server public key")
+
 function encrypt_data(data) {
     let encrypted = ""
     try {
