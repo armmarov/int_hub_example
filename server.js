@@ -2,15 +2,15 @@ const crypto = require('crypto');
 const config = require('./config');
 const axios = require('axios');
 var fs = require("fs");
-var assert = require('assert');
+var assert = require('chai').assert
 
 let publicKey = fs.readFileSync("./key/user_key.pub", "utf8");
 let privateKey = fs.readFileSync("./key/user_key.priv", "utf8");
 let serverKey = fs.readFileSync("./key/server_key.pub", "utf8");
 
-assert(publicKey != "", "Unable to load user public key")
-assert(privateKey != "", "Unable to load user private key")
-assert(serverKey != "", "Unable to load server public key")
+assert.isNotNull(publicKey, "Unable to load user public key")
+assert.isNotNull(privateKey, "Unable to load user private key")
+assert.isNotNull(serverKey, "Unable to load server public key")
 
 function encrypt_data(data) {
     let encrypted = ""
@@ -72,7 +72,7 @@ axios
     .then(res => {
         console.log("Receiving token...")
 
-        assert(res.data.token != "", "Token is empty")
+        assert.isNotNull(res.data.token, "Token is empty")
 
         let token = 'OBC ' + res.data.token
 
@@ -91,9 +91,9 @@ axios
             publickey: publicKey.replace(/(\r\n|\n|\r)/gm, "")
         }
 
-        assert(data.encryptedkey != "", "Unable to encrypt key")
-        assert(data.encrypteddata != "", "Unable to encrypt data")
-        assert(data.publickey != "", "Unable to get public key")
+        assert.isNotEmpty(data.encryptedkey, "Unable to encrypt key")
+        assert.isNotEmpty(data.encrypteddata, "Unable to encrypt data")
+        assert.isNotEmpty(data.publickey, "Unable to get public key")
 
         axios
             .post(config.IH_URL + config.IH_BC + "/web3.eth.personal/newAccount", data, {
@@ -101,18 +101,20 @@ axios
             })
             .then(res => {
                 console.log("Receiving reply from Blockchain...")
-                assert(res.data.result.EncryptKey != "", "Unable to get encrypted key from server")
-                assert(res.data.result.EncryptedData != "", "Unable to get encrypted data from server")
+
+                assert.isUndefined(res.data.error, res.data.error)
+                assert.isNotNull(res.data.result.EncryptKey, "Unable to get encrypted key from server")
+                assert.isNotNull(res.data.result.EncryptedData, "Unable to get encrypted data from server")
 
                 let rcv_key = decrypt_key(res.data.result.EncryptKey)
                 let rcv_dat = decrypt_data(res.data.result.EncryptedData, rcv_key)
                 console.log("Receive data:", rcv_dat)
             })
             .catch(error => {
-                console.log(error.response)
+                console.log(error)
             });
     })
     .catch(error => {
-        console.log(error.response)
+        console.log(error)
     });
 
