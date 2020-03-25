@@ -103,11 +103,11 @@ axios
                 console.log("Receiving reply from Blockchain...")
 
                 assert.isUndefined(res.data.error, res.data.error)
-                assert.isNotNull(res.data.result.EncryptKey, "Unable to get encrypted key from server")
-                assert.isNotNull(res.data.result.EncryptedData, "Unable to get encrypted data from server")
+                assert.isNotNull(res.data.result.encryptedkey, "Unable to get encrypted key from server")
+                assert.isNotNull(res.data.result.encrypteddata, "Unable to get encrypted data from server")
 
-                let rcv_key = decrypt_key(res.data.result.EncryptKey)
-                let rcv_dat = decrypt_data(res.data.result.EncryptedData, rcv_key)
+                let rcv_key = decrypt_key(res.data.result.encryptedkey)
+                let rcv_dat = decrypt_data(res.data.result.encrypteddata, rcv_key)
                 console.log("Received data:", rcv_dat)
             })
             .catch(error => {
